@@ -14,6 +14,7 @@
     discord
     element-desktop
     eza
+    gcc
     git
     helix
     plasma5Packages.yakuake

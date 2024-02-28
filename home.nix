@@ -7,19 +7,24 @@
 
   home.username = "terts";
   home.homeDirectory = "/home/terts";
+
   home.packages = with pkgs; [
     atuin
     bat
+    cargo-nextest
     comma
+    difftastic
     discord
     element-desktop
     eza
     gcc
+    gh
     git
     helix
-    plasma5Packages.yakuake
-    plasma5Packages.kdeconnect-kde
+    libselinux
     nixfmt
+    plasma5Packages.kdeconnect-kde
+    plasma5Packages.yakuake
     ripgrep
     rustup
     slack
@@ -27,6 +32,10 @@
     vscode
     zoxide
   ];
+
+  home.sessionVariables = {
+    LIBCLANG_PATH = "${pkgs.llvmPackages_11.libclang.lib}/lib";
+  };
 
   programs.home-manager.enable = true;
 
@@ -42,7 +51,11 @@
         version = "1.0.5";
         sha256 = "+IFqgWliKr+qjBLmQlzF44XNbN7Br5a119v9WAnZOu4=";
       }];
-    userSettings = { workbench.colorTheme = "Ayu Dark"; };
+    userSettings = {
+      workbench.colorTheme = "Ayu Dark";
+      editor.inlayHints.enabled = "offUnlessPressed";
+
+    };
   };
 
   programs.firefox = {
@@ -78,6 +91,7 @@
     enable = true;
     extraConfig = {
       init.defaultBranch = "main";
+      pull.rebase = true;
     };
     aliases = {
       co = "checkout";

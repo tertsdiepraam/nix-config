@@ -12,6 +12,7 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader.
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -117,6 +118,8 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+
+  services.fprintd.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

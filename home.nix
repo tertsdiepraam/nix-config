@@ -23,8 +23,8 @@
     helix
     libselinux
     nixfmt
-    plasma5Packages.kdeconnect-kde
-    plasma5Packages.yakuake
+    kdePackages.kdeconnect-kde
+    kdePackages.yakuake
     ripgrep
     rustup
     slack
@@ -60,7 +60,7 @@
 
   programs.firefox = {
     enable = true;
-    nativeMessagingHosts = [ pkgs.plasma5Packages.plasma-browser-integration ];
+    nativeMessagingHosts = [ pkgs.kdePackages.plasma-browser-integration ];
     profiles."terts" = {
       extensions = with pkgs.nur.repos.rycee.firefox-addons; [
         bitwarden

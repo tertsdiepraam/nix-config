@@ -1,5 +1,5 @@
 BRANCH=$(git branch --show-current HEAD)
-echo "blaaaa: $BRANCH"
+echo "|$BRANCH|"
 
 case "$BRANCH" in
     *main*)
@@ -8,4 +8,5 @@ case "$BRANCH" in
             [Yy]*) echo "Ok, fine, you do you"; exit 0 ;;  
             [Nn]*) echo "Good!"; exit 1 ;;
         esac;;
+    *) echo "Go ahead!";;
 esac

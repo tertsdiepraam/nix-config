@@ -1,4 +1,4 @@
-BRANCH=$(git branch --show-current)
+BRANCH=$(git branch --show-current HEAD)
 echo "blaaaa: $BRANCH"
 if [ "$BRANCH" = "main" ]; then
     read -p "Are you sure you want to commit to main??? [y/n]: " yn

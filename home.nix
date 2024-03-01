@@ -25,6 +25,7 @@
     nixfmt
     kdePackages.kdeconnect-kde
     kdePackages.yakuake
+    python3
     ripgrep
     rustup
     slack

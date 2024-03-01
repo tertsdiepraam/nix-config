@@ -1,5 +1,5 @@
-BRANCH=$(git branch --show-current HEAD)
-echo "|$BRANCH|"
+BRANCH=$(git branch --show-current HEAD);
+echo "|$BRANCH|";
 
 case "$BRANCH" in
     *main*)

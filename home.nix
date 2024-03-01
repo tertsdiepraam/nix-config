@@ -29,6 +29,7 @@
     rustup
     slack
     spotify
+    vlc
     vscode
     zoxide
   ];
@@ -92,6 +93,9 @@
     extraConfig = {
       init.defaultBranch = "main";
       pull.rebase = true;
+    };
+    hooks = {
+      pre-commit = ./pre-commit.sh;
     };
     aliases = {
       co = "checkout";

@@ -11,6 +11,7 @@
   home.packages = with pkgs; [
     atuin
     bat
+    bitwarden
     cargo-nextest
     comma
     difftastic
@@ -20,23 +21,35 @@
     gcc
     gh
     git
+    gitui
     helix
     libselinux
     nixfmt
+    nodejs
+    yarn
+    thunderbird
     kdePackages.kdeconnect-kde
     kdePackages.yakuake
+    kdePackages.kmail
+    kdePackages.kontact
+    kdePackages.kmail-account-wizard
+    kdePackages.akonadi
+    kdePackages.kdepim-runtime
+    kdePackages.akonadiconsole
+    pkg-config
     python3
     ripgrep
     rustup
     slack
     spotify
     vlc
-    vscode
+    zola
     zoxide
   ];
 
   home.sessionVariables = {
-    LIBCLANG_PATH = "${pkgs.llvmPackages_11.libclang.lib}/lib";
+    LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
+    NIXOS_OZONE_WL = "1";
   };
 
   programs.home-manager.enable = true;
@@ -47,16 +60,24 @@
     enable = true;
     extensions = with pkgs.vscode-extensions;
       [ rust-lang.rust-analyzer jnoortheen.nix-ide ]
-      ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [{
-        name = "ayu";
-        publisher = "teabyii";
-        version = "1.0.5";
-        sha256 = "+IFqgWliKr+qjBLmQlzF44XNbN7Br5a119v9WAnZOu4=";
-      }];
+      ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "ayu";
+          publisher = "teabyii";
+          version = "1.0.5";
+          sha256 = "+IFqgWliKr+qjBLmQlzF44XNbN7Br5a119v9WAnZOu4=";
+        }
+        {
+          name = "errorlens";
+          publisher = "usernamehw";
+          version = "3.16.0";
+          sha256 = "Y3M/A5rYLkxQPRIZ0BUjhlkvixDae+wIRUsBn4tREFw=";
+        }
+      ];
     userSettings = {
       workbench.colorTheme = "Ayu Dark";
       editor.inlayHints.enabled = "offUnlessPressed";
-
+      git.confirmSync = false;
     };
   };
 
@@ -69,6 +90,7 @@
         plasma-integration
         ublock-origin
         rust-search-extension
+        darkreader
       ];
       settings = { "widget.use-xdg-desktop-portal.file-picker" = 1; };
     };
@@ -84,6 +106,11 @@
         select = "underline";
       };
     };
+    languages = {
+      language = [{
+        name = "rust";
+      }];
+    };
   };
 
   programs.zoxide.enable = true;
@@ -94,6 +121,7 @@
     extraConfig = {
       init.defaultBranch = "main";
       pull.rebase = true;
+      push.autoSetupRemote = true;
     };
     aliases = {
       co = "checkout";

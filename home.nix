@@ -9,11 +9,15 @@
   home.homeDirectory = "/home/terts";
 
   home.packages = with pkgs; [
+    alsa-lib
+    udev
     atuin
     bat
     bitwarden
+    blender
     cargo-nextest
     comma
+    deno
     difftastic
     discord
     element-desktop
@@ -24,6 +28,8 @@
     gitui
     helix
     libselinux
+    libreoffice
+    mold
     nixfmt
     nodejs
     yarn
@@ -44,7 +50,9 @@
     spotify
     vlc
     zola
+    zoom
     zoxide
+    zulip
   ];
 
   home.sessionVariables = {
@@ -52,9 +60,19 @@
     NIXOS_OZONE_WL = "1";
   };
 
+  services.ssh-agent.enable = true;
+
   programs.home-manager.enable = true;
 
-  programs.fish.enable = true;
+  programs.fish = {
+    enable = true;
+    shellAbbrs = {
+      cr = "cargo run";
+      ct = "cargo nextest run";
+      cb = "cargo build";
+      cbr = "cargo build --release";
+    };
+  };
 
   programs.vscode = {
     enable = true;
@@ -75,9 +93,11 @@
         }
       ];
     userSettings = {
-      workbench.colorTheme = "Ayu Dark";
+      window.autoDetectColorScheme = true;
+      workbench.preferredDarkColorTheme = "Ayu Dark";
       editor.inlayHints.enabled = "offUnlessPressed";
       git.confirmSync = false;
+      editor.rulers = [80 100];
     };
   };
 
@@ -90,7 +110,6 @@
         plasma-integration
         ublock-origin
         rust-search-extension
-        darkreader
       ];
       settings = { "widget.use-xdg-desktop-portal.file-picker" = 1; };
     };

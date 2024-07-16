@@ -16,7 +16,7 @@
     highlight.ExtraWhitespace.bg = "red";
     match.ExtraWhitespace = "\\s\\+$";
 
-        keymaps = [
+    keymaps = [
       {
         key = "<f2>";
         action = "<cmd>Lspsaga rename<cr>";
@@ -35,10 +35,12 @@
       # Treesitter is just treesitter awesomeness
       treesitter = {
         enable = true;
-        indent = true;
 
         nixGrammars = true;
-        ensureInstalled = "all";
+        settings = {
+          indent.enable = true;
+          ensure_installed = "all";
+        };
       };
 
       # Select and edit delimiters
@@ -114,7 +116,9 @@
             "." = "set_root";
             "f" = "fuzzy_finder";
             "/" = "filter_on_submit";
-            "h" = "show_help";
+            "?" = "show_help";
+            "l" = "open";
+            "h" = "close_node";
           };
         };
         filesystem = {
@@ -124,37 +128,6 @@
             hideDotfiles = false;
             forceVisibleInEmptyFolder = true;
             hideGitignored = false;
-          };
-        };
-      };
-
-      # Code action highlighting
-      # https://github.com/kosayoda/nvim-lightbulb
-      nvim-lightbulb = {
-        enable = true;
-        settings = {
-          autocmd = {
-            enabled = true;
-            updatetime = 200;
-          };
-          line = {
-            enabled = true;
-          };
-          number = {
-            enabled = true;
-            hl = "LightBulbNumber";
-          };
-          float = {
-            enabled = true;
-            text = "💡";
-          };
-          sign = {
-            enabled = true;
-            text = "💡";
-          };
-          status_text = {
-            enabled = true;
-            text = "💡";
           };
         };
       };
@@ -175,16 +148,79 @@
       # https://nvimdev.github.io/lspsaga/
       lspsaga = {
         enable = true;
-        lightbulb.enable = false;
+        lightbulb = {
+          enable = true;
+          virtualText = false;
+        };
         codeAction.keys = {
           quit = "<Esc>";
+        };
+      };
+
+      rustaceanvim = {
+        enable = true;
+        rustAnalyzerPackage = pkgs.rust-analyzer;
+
+        settings = {
+          auto_attach = true;
+          server = {
+            standalone = false;
+            cmd = [ "rustup" "run" "nightly" "rust-analyzer" ];
+            default_settings = {
+              rust-analyzer = {
+                inlayHints = {
+                  parameterHints.enable = false;
+                  typeHints.enable = false;
+                  lifetimeElisionHints.enable = "never";
+                };
+                check = { command = "clippy"; };
+              };
+              cargo = {
+                buildScripts.enable = true;
+                features = "all";
+                runBuildScripts = true;
+                loadOutDirsFromCheck = true;
+              };
+              checkOnSave = true;
+              check = {
+                allFeatures = true;
+                command = "clippy";
+                extraArgs = [ "--no-deps" ];
+              };
+              procMacro = { enable = true; };
+              imports = {
+                granularity = { group = "module"; };
+                prefix = "self";
+              };
+              files = {
+                excludeDirs =
+                  [ ".cargo" ".direnv" ".git" "node_modules" "target" ];
+              };
+
+              inlayHints = {
+                bindingModeHints.enable = true;
+                closureStyle = "rust_analyzer";
+                closureReturnTypeHints.enable = "always";
+                discriminantHints.enable = "always";
+                expressionAdjustmentHints.enable = "always";
+                implicitDrops.enable = true;
+                lifetimeElisionHints.enable = "always";
+                rangeExclusiveHints.enable = true;
+              };
+
+              rustc.source = "discover";
+            };
+            diagnostics = {
+              enable = true;
+              styleLints.enable = true;
+            };
+          };
         };
       };
 
       # Status line
       lualine = {
         enable = true;
-        theme = "onedark";
       };
 
       lsp = {
@@ -251,7 +287,9 @@
       cmp-path
       cmp-spell
       nvim-web-devicons
-    ]
+    ];
+
+    extraConfigLua = builtins.readFile ./config.lua;
 
     opts = {
       startofline = true;

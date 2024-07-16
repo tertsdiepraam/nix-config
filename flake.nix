@@ -9,10 +9,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixvim = {
+      url = "github:nix-community/nixvim";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     nur.url = "github:nix-community/NUR";
   };
 
-  outputs = { self, nixpkgs, home-manager, nur }:
+  outputs = { self, nixpkgs, home-manager, nixvim, nur }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -20,10 +25,11 @@
         config.allowUnfree = true;
         overlays = [ nur.overlay ];
       };
+      homeManagerModules = [ nixvim.homeManagerModules.nixvim ];
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit pkgs; };
+        specialArgs = { inherit pkgs; inherit nixvim; };
         modules = [
           home-manager.nixosModules.home-manager
           nur.nixosModules.nur

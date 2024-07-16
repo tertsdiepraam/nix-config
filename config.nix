@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, nixvim, ... }:
 
 {
   imports = [ # Include the results of the hardware scan.
@@ -61,7 +61,7 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  sound.enable = true;
+  # sound.enable = true;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -94,6 +94,9 @@
     packages = with pkgs; [ firefox kate ];
   };
 
+  home-manager.sharedModules = [
+    nixvim.homeManagerModules.nixvim
+  ];
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.terts = { ... }: {

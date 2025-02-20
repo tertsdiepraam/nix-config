@@ -23,7 +23,7 @@
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [ nur.overlay ];
+        overlays = [ nur.overlays.default ];
       };
       homeManagerModules = [ nixvim.homeManagerModules.nixvim ];
     in {
@@ -32,7 +32,7 @@
         specialArgs = { inherit pkgs; inherit nixvim; };
         modules = [
           home-manager.nixosModules.home-manager
-          nur.nixosModules.nur
+          nur.modules.nixos.default
           ./config.nix
         ];
       };

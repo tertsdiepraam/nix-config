@@ -2,17 +2,26 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, nixvim, ... }:
+{
+  config,
+  pkgs,
+  nixvim,
+  ...
+}:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  imports = [
+    # Include the results of the hardware scan.
     ./hardware-configuration.nix
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Bootloader.
-  boot.kernelPackages = pkgs.linuxPackages_6_9;
+  boot.kernelPackages = pkgs.linuxPackages;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -62,7 +71,7 @@
 
   # Enable sound with pipewire.
   # sound.enable = true;
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -77,6 +86,8 @@
     #media-session.enable = true;
   };
 
+  services.yubikey-agent.enable = true;
+
   hardware.bluetooth = {
     enable = true;
     powerOnBoot = true;
@@ -89,9 +100,16 @@
   users.users.terts = {
     isNormalUser = true;
     description = "Terts Diepraam";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "wireshark"
+    ];
     shell = pkgs.fish;
-    packages = with pkgs; [ firefox kate ];
+    packages = with pkgs; [
+      firefox
+      kate
+    ];
   };
 
   home-manager.sharedModules = [
@@ -99,12 +117,28 @@
   ];
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.users.terts = { ... }: {
-    imports = [ ./home.nix ];
-    home.stateVersion = config.system.stateVersion;
-  };
+  home-manager.users.terts =
+    { ... }:
+    {
+      imports = [ ./home.nix ];
+      home.stateVersion = config.system.stateVersion;
+    };
 
   programs.fish.enable = true;
+  programs.nix-ld.enable = true;
+
+  # not supported in home-manager
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+
+  programs.wireshark = {
+    enable = true;
+    package = pkgs.wireshark;
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;

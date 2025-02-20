@@ -8,72 +8,89 @@
   home.username = "terts";
   home.homeDirectory = "/home/terts";
 
-  home.packages = let
-    global = with pkgs; [
-      alsa-lib
-      atuin
-      bat
-      bind
-      bitwarden
-      blender
-      cargo-nextest
-      chromium
-      comma
-      deno
-      difftastic
-      discord
-      dogdns
-      doggo
-      element-desktop
-      eza
-      gcc
-      gh
-      git
-      gitui
-      helix
-      just
-      knot-dns
-      ldns
-      libreoffice
-      libselinux
-      mattermost
-      mold
-      nixfmt
-      nodejs
-      nodePackages.prettier
-      nushell
-      obs-studio
-      pdns
-      pkg-config
-      python3
-      ripgrep
-      rustup
-      samply
-      slack
-      spotify
-      thunderbird
-      udev
-      vlc
-      yarn
-      zola
-      zoom
-      zoxide
-      zulip
-    ];
-    kde = with pkgs.kdePackages; [
-      akonadi
-      akonadi-calendar
-      kdeconnect-kde
-      kdenlive
-      kdepim-runtime
-      kmail
-      kmail-account-wizard
-      kontact
-      ktorrent
-      yakuake
-      merkuro
-    ];
-  in global ++ kde;
+  home.packages =
+    let
+      global = with pkgs; [
+        alsa-lib
+        atuin
+        age-plugin-yubikey
+        bat
+        bind
+        # bitwarden
+        # blender
+        cargo-nextest
+        cargo-release
+        chromium
+        comma
+        deno
+        difftastic
+        discord
+        dogdns
+        doggo
+        element-desktop
+        eza
+        gcc
+        gh
+        git
+        gitui
+        gnumake
+        helix
+        inkscape
+        just
+        knot-dns
+        ldns
+        libreoffice
+        libselinux
+        luajit
+        mattermost-desktop
+        mold
+        neovide
+        nixfmt-rfc-style
+        nodejs
+        nushell
+        obs-studio
+        pdns
+        pkg-config
+        pinentry-qt
+        python3
+        qgis
+        ripgrep
+        rustup
+        samply
+        signal-desktop
+        slack
+        spotify
+        thunderbird
+        udev
+        uv
+        vlc
+        wl-clipboard-rs
+        yarn
+        yubikey-manager
+        zellij
+        zola
+        zoom-us
+        zoxide
+        zulip
+        nerd-fonts.fira-code
+        nerd-fonts.droid-sans-mono
+      ];
+      kde = with pkgs.kdePackages; [
+        akonadi
+        akonadi-calendar
+        kdeconnect-kde
+        kdenlive
+        kdepim-runtime
+        kmail
+        kmail-account-wizard
+        kontact
+        ktorrent
+        tokodon
+        yakuake
+        merkuro
+      ];
+    in
+    global ++ kde;
 
   home.sessionVariables = {
     LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
@@ -98,8 +115,11 @@
 
   programs.vscode = {
     enable = true;
-    extensions = with pkgs.vscode-extensions;
-      [ rust-lang.rust-analyzer jnoortheen.nix-ide ]
+    extensions =
+      with pkgs.vscode-extensions;
+      [
+        jnoortheen.nix-ide
+      ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "ayu";
@@ -119,7 +139,10 @@
       workbench.preferredDarkColorTheme = "Ayu Dark";
       editor.inlayHints.enabled = "offUnlessPressed";
       git.confirmSync = false;
-      editor.rulers = [80 100];
+      editor.rulers = [
+        80
+        100
+      ];
       rust-analyzer.check.command = "clippy";
       git-blame.config.showBlameInline = false;
     };
@@ -129,13 +152,15 @@
     enable = true;
     nativeMessagingHosts = [ pkgs.kdePackages.plasma-browser-integration ];
     profiles."terts" = {
-      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+      extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
         bitwarden
         plasma-integration
         ublock-origin
         rust-search-extension
       ];
-      settings = { "widget.use-xdg-desktop-portal.file-picker" = 1; };
+      settings = {
+        "widget.use-xdg-desktop-portal.file-picker" = 1;
+      };
     };
   };
 
@@ -150,13 +175,19 @@
           normal = "block";
           select = "underline";
         };
-        rulers = [78 80 100];
+        rulers = [
+          78
+          80
+          100
+        ];
       };
     };
     languages = {
-      language = [{
-        name = "rust";
-      }];
+      language = [
+        {
+          name = "rust";
+        }
+      ];
     };
   };
 
@@ -177,4 +208,6 @@
     userName = "Terts Diepraam";
     userEmail = "terts.diepraam@gmail.com";
   };
+
+  fonts.fontconfig.enable = true;
 }

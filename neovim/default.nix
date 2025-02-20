@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs.nixvim = {
     enable = true;
     defaultEditor = true;
@@ -7,14 +8,13 @@
     vimAlias = true;
     vimdiffAlias = true;
 
-    colorscheme = "ayu";
-
     globals.mapleader = " ";
     globals.maplocalleader = " ";
 
     # Highlight and remove extra white spaces
     highlight.ExtraWhitespace.bg = "red";
     match.ExtraWhitespace = "\\s\\+$";
+    clipboard.providers.wl-copy.enable = true;
 
     keymaps = [
       {
@@ -31,26 +31,42 @@
       }
     ];
 
+    colorscheme = "ayu";
+    colorschemes.ayu.enable = true;
+
     plugins = {
+      which-key = {
+        enable = true;
+      };
+
       # Treesitter is just treesitter awesomeness
       treesitter = {
         enable = true;
 
         nixGrammars = true;
+        nixvimInjections = true;
+
         settings = {
           indent.enable = true;
           ensure_installed = "all";
+          ignore_install = [
+            "wing"
+          ];
+          # seems broken right now
+          highlight.enable = true;
         };
       };
 
+      rainbow-delimiters.enable = true;
+
       # Select and edit delimiters
       # https://github.com/kylechui/nvim-surround
-      surround.enable = true;
+      vim-surround.enable = true;
 
       # LSP support for CMP
       cmp-nvim-lsp.enable = true;
 
-      # Wrapper around Neovims native LSP formatting.
+      # Wrapper around Neovim's native LSP formatting.
       # https://github.com/lukas-reineke/lsp-format.nvim
       lsp-format.enable = true;
 
@@ -58,13 +74,13 @@
       # https://github.com/tpope/vim-fugitive
       fugitive.enable = true;
 
-      # Pictrograms for LSP completion
+      # Pictograms for LSP completion
       # https://github.com/onsails/lspkind.nvim
       lspkind.enable = true;
 
       # Helps managing crates.io dependencies
       # https://github.com/Saecki/crates.nvim
-      crates-nvim.enable = true;
+      crates.enable = true;
 
       # Better UI for LSP progress and notifications
       # https://github.com/j-hui/fidget.nvim
@@ -81,7 +97,7 @@
       # https://github.com/rmagatti/auto-session
       auto-session = {
         enable = true;
-        extraOptions = {
+        settings = {
           auto_save_enabled = true;
           auto_restore_enabled = true;
           pre_save_cmds = [ "Neotree close" ];
@@ -132,6 +148,8 @@
         };
       };
 
+      neogit.enable = true;
+
       gitsigns = {
         enable = true;
 
@@ -148,10 +166,7 @@
       # https://nvimdev.github.io/lspsaga/
       lspsaga = {
         enable = true;
-        lightbulb = {
-          enable = true;
-          virtualText = false;
-        };
+        lightbulb.enable = false;
         codeAction.keys = {
           quit = "<Esc>";
         };
@@ -165,7 +180,12 @@
           auto_attach = true;
           server = {
             standalone = false;
-            cmd = [ "rustup" "run" "nightly" "rust-analyzer" ];
+            cmd = [
+              "rustup"
+              "run"
+              "stable"
+              "rust-analyzer"
+            ];
             default_settings = {
               rust-analyzer = {
                 inlayHints = {
@@ -173,7 +193,9 @@
                   typeHints.enable = false;
                   lifetimeElisionHints.enable = "never";
                 };
-                check = { command = "clippy"; };
+                check = {
+                  command = "clippy";
+                };
               };
               cargo = {
                 buildScripts.enable = true;
@@ -187,14 +209,23 @@
                 command = "clippy";
                 extraArgs = [ "--no-deps" ];
               };
-              procMacro = { enable = true; };
+              procMacro = {
+                enable = true;
+              };
               imports = {
-                granularity = { group = "module"; };
+                granularity = {
+                  group = "module";
+                };
                 prefix = "self";
               };
               files = {
-                excludeDirs =
-                  [ ".cargo" ".direnv" ".git" "node_modules" "target" ];
+                excludeDirs = [
+                  ".cargo"
+                  ".direnv"
+                  ".git"
+                  "node_modules"
+                  "target"
+                ];
               };
 
               inlayHints = {
@@ -228,13 +259,12 @@
 
         servers = {
           clangd.enable = true;
-          eslint.enable = true;
           html.enable = true;
           jsonls.enable = true;
           pyright.enable = true;
           taplo.enable = true;
           bashls.enable = true;
-          tsserver.enable = true;
+          ts_ls.enable = true;
           marksman.enable = true;
           yamlls.enable = true;
         };
@@ -249,11 +279,15 @@
         };
       };
 
+      web-devicons.enable = true;
+
       floaterm = {
         enable = true;
-        opener = "edit";
-        width = 0.8;
-        height = 0.8;
+        settings = {
+          opener = "edit";
+          width = 0.8;
+          height = 0.8;
+        };
       };
 
       telescope = {
@@ -267,27 +301,61 @@
             path_display = [ "smart" ];
             layout_strategy = "horizontal";
             layout_config = {
-              width = 0.99;
-              height = 0.99;
+              width = 0.8;
+              height = 0.8;
             };
           };
         };
       };
 
+      barbar = {
+        enable = true;
+        settings = {
+          options.diagnostics = "nvim_lsp";
+          focus_on_close = "previous";
+        };
+      };
+
       bufferline = {
         enable = true;
-        diagnostics = "nvim_lsp";
+        settings.options.diagnostics = "nvim_lsp";
       };
     };
 
     extraPlugins = with pkgs.vimPlugins; [
-      neovim-ayu
       vim-vsnip
       cmp-vsnip
       cmp-path
       cmp-spell
-      nvim-web-devicons
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "telescope-zoxide";
+        src = pkgs.fetchFromGitHub {
+          owner = "jvgrootveld";
+          repo = "telescope-zoxide";
+          rev = "54bfe630bad08dc9891ec78c7cf8db38dd725c97";
+          hash = "sha256-LGfyAIbAAAF3q0NpMZx1AIgHLvk6ecpv7RyiL1q8Lxs";
+        };
+      })
     ];
+
+    extraConfigLuaPre = ''
+      vim.g.neovide_theme = 'auto'
+      vim.g.neovide_scale_factor = 0.8
+      local change_scale_factor = function(delta)
+        vim.g.neovide_scale_factor = vim.g.neovide_scale_factor * delta
+      end
+      vim.keymap.set("n", "<C-=>", function()
+        change_scale_factor(1.10)
+      end)
+      vim.keymap.set("n", "<C-->", function()
+        change_scale_factor(1/1.10)
+      end)
+      vim.keymap.set("n", "<C-0>", function()
+        vim.g.neovide_scale_factor = 1.0
+      end)
+      vim.g.neovide_cursor_vfx_mode = ""
+      vim.g.neovide_cursor_trail_size = 0
+    '';
 
     extraConfigLua = builtins.readFile ./config.lua;
 

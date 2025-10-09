@@ -2,7 +2,6 @@
 {
   programs.nixvim = {
     enable = true;
-    defaultEditor = true;
 
     viAlias = true;
     vimAlias = true;
@@ -174,7 +173,6 @@
 
       rustaceanvim = {
         enable = true;
-        rustAnalyzerPackage = pkgs.rust-analyzer;
 
         settings = {
           auto_attach = true;
@@ -192,6 +190,8 @@
                   parameterHints.enable = false;
                   typeHints.enable = false;
                   lifetimeElisionHints.enable = "never";
+                  closingBraceHints.enable = false;
+                  chainingHints.enable = false;
                 };
                 check = {
                   command = "clippy";

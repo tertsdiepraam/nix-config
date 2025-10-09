@@ -60,6 +60,10 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  # Enable the COSMIC Desktop Environment.
+  # services.displayManager.cosmic-greeter.enable = true;
+  # services.desktopManager.cosmic.enable = true;
+   
   # Configure keymap in X11
   services.xserver.xkb = {
     layout = "us";
@@ -68,11 +72,17 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
 
   # Enable sound with pipewire.
   # sound.enable = true;
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
+  security.pam.services.login.kwallet.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -108,7 +118,7 @@
     shell = pkgs.fish;
     packages = with pkgs; [
       firefox
-      kate
+      kdePackages.kate
     ];
   };
 
@@ -145,7 +155,7 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ neovim ];
+  environment.systemPackages = with pkgs; [ neovim libimobiledevice ifuse ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

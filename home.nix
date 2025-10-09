@@ -11,13 +11,14 @@
   home.packages =
     let
       global = with pkgs; [
+        alacritty
         alsa-lib
         atuin
         age-plugin-yubikey
+        bash
         bat
         bind
-        # bitwarden
-        # blender
+        blender
         cargo-nextest
         cargo-release
         chromium
@@ -25,17 +26,17 @@
         deno
         difftastic
         discord
-        dogdns
-        doggo
         element-desktop
         eza
         gcc
         gh
         git
-        gitui
+        gitu
         gnumake
         helix
         inkscape
+        jjui
+        jujutsu
         just
         knot-dns
         ldns
@@ -48,22 +49,25 @@
         nixfmt-rfc-style
         nodejs
         nushell
-        obs-studio
-        pdns
+        pandoc
+        pcsx2
         pkg-config
         pinentry-qt
         python3
-        qgis
         ripgrep
         rustup
         samply
-        signal-desktop
+        signal-desktop-bin
         slack
         spotify
         thunderbird
+        tree-sitter
+        typst
         udev
         uv
+        valgrind
         vlc
+        wget
         wl-clipboard-rs
         yarn
         yubikey-manager
@@ -96,7 +100,7 @@
     LIBCLANG_PATH = "${pkgs.llvmPackages.libclang.lib}/lib";
     NIXOS_OZONE_WL = "1";
     PKG_CONFIG_PATH = "${pkgs.openssl.dev}/lib/pkgconfig";
-    EDITOR = "nvim";
+    EDITOR = "hx";
   };
 
   services.ssh-agent.enable = true;
@@ -113,9 +117,13 @@
     };
   };
 
+  programs.starship = {
+    enable = true;
+  };
+
   programs.vscode = {
     enable = true;
-    extensions =
+    profiles.default.extensions =
       with pkgs.vscode-extensions;
       [
         jnoortheen.nix-ide
@@ -134,7 +142,7 @@
           sha256 = "Y3M/A5rYLkxQPRIZ0BUjhlkvixDae+wIRUsBn4tREFw=";
         }
       ];
-    userSettings = {
+    profiles.default.userSettings = {
       window.autoDetectColorScheme = true;
       workbench.preferredDarkColorTheme = "Ayu Dark";
       editor.inlayHints.enabled = "offUnlessPressed";
@@ -161,33 +169,6 @@
       settings = {
         "widget.use-xdg-desktop-portal.file-picker" = 1;
       };
-    };
-  };
-
-  programs.helix = {
-    enable = true;
-    settings = {
-      theme = "ayu_dark";
-      editor = {
-        line-number = "relative";
-        cursor-shape = {
-          insert = "bar";
-          normal = "block";
-          select = "underline";
-        };
-        rulers = [
-          78
-          80
-          100
-        ];
-      };
-    };
-    languages = {
-      language = [
-        {
-          name = "rust";
-        }
-      ];
     };
   };
 

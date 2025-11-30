@@ -5,7 +5,6 @@
 {
   config,
   pkgs,
-  nixvim,
   ...
 }:
 
@@ -21,7 +20,7 @@
   ];
 
   # Bootloader.
-  boot.kernelPackages = pkgs.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -83,6 +82,7 @@
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   security.pam.services.login.kwallet.enable = true;
+  services.pcscd.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -95,8 +95,6 @@
     # no need to redefine it in your config for now)
     #media-session.enable = true;
   };
-
-  services.yubikey-agent.enable = true;
 
   hardware.bluetooth = {
     enable = true;
@@ -122,9 +120,7 @@
     ];
   };
 
-  home-manager.sharedModules = [
-    nixvim.homeManagerModules.nixvim
-  ];
+  home-manager.sharedModules = [];
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.terts =
@@ -136,7 +132,19 @@
 
   programs.fish.enable = true;
   programs.nix-ld.enable = true;
+  programs.bazecor.enable = true;
+  programs.ssh = {
+    startAgent = true;
+    enableAskPassword = true;
+    extraConfig = "
+      Host *
+        AddKeysToAgent 1h  
 
+      IdentityFile ~/.ssh/id_ed25519_sk_nano
+      IdentityFile ~/.ssh/id_ed25519_sk_big
+    ";
+  };
+  
   # not supported in home-manager
   programs.steam = {
     enable = true;
@@ -155,7 +163,16 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ neovim libimobiledevice ifuse ];
+  environment.systemPackages = with pkgs; [
+    neovim
+    libimobiledevice
+    ifuse
+    kdePackages.sddm-kcm
+   ];
+
+  environment.variables = {
+    QT_QPA_PLATFORM = "wayland";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

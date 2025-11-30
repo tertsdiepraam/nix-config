@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./neovim ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -53,6 +52,7 @@
         pcsx2
         pkg-config
         pinentry-qt
+        prismlauncher
         python3
         ripgrep
         rustup
@@ -71,6 +71,7 @@
         wl-clipboard-rs
         yarn
         yubikey-manager
+        zed-editor
         zellij
         zola
         zoom-us
@@ -122,7 +123,7 @@
   };
 
   programs.vscode = {
-    enable = true;
+    enable = false;
     profiles.default.extensions =
       with pkgs.vscode-extensions;
       [
